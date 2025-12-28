@@ -171,8 +171,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onDelete, onEdit, on
               </div>
             ) : (
               <>
-                {/* Reasoning Block */}
-                {!isUser && (message.reasoning || (message.isStreaming && !message.text)) && (
+                {/* Reasoning Block - Show during streaming OR when both reasoning and text exist */}
+                {!isUser && ((message.isStreaming && !message.text) || (message.reasoning && message.text)) && (
                   <div className="mb-6 text-sm">
                     <button 
                       onClick={() => setIsReasoningCollapsed(!isReasoningCollapsed)}
@@ -200,10 +200,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onDelete, onEdit, on
                   </div>
                 )}
 
-                {/* Final Answer */}
-                {message.text && (
+                {/* Final Answer - Show text, or reasoning as answer when text is empty */}
+                {(message.text || (!message.isStreaming && message.reasoning)) && (
                   // Removed prose-invert for standard light mode prose
-                  <div className={`markdown-body prose prose-lg max-w-none 
+                  <div className={`markdown-body prose prose-lg max-w-none
                     prose-p:text-inherit prose-headings:text-inherit prose-strong:text-inherit
                     prose-pre:bg-ink-900 prose-pre:border prose-pre:border-ink-700 prose-pre:rounded-xl prose-pre:text-parchment-50
                     prose-code:text-bronze-800 prose-code:bg-parchment-200/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
@@ -212,11 +212,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onDelete, onEdit, on
                     prose-li:marker:text-bronze-500
                     ${isUser ? 'prose-invert prose-p:text-parchment-50 prose-headings:text-parchment-50 prose-strong:text-white prose-code:text-parchment-100 prose-code:bg-white/10 prose-a:text-parchment-200' : ''}
                   `}>
-                    <ReactMarkdown>{message.text}</ReactMarkdown>
+                    <ReactMarkdown>{message.text || message.reasoning}</ReactMarkdown>
                   </div>
                 )}
                 
-                {/* Blinking Cursor for Streaming */}
+                {/* Blinking Cursor for Streaming text */}
                 {message.isStreaming && message.text && (
                   <span className={`inline-block w-2.5 h-5 ml-1 align-middle animate-pulse ${isUser ? 'bg-parchment-50' : 'bg-bronze-500'}`} />
                 )}
