@@ -1,0 +1,5 @@
+{
+  "name": "DeepSeek V3.2 Speciale Client",
+  "description": "Client for DeepSeek V3.2 Speciale model featuring deep reasoning capabilities and specialized modes for Math, Coding, and Logic.",
+  "requestFramePermissions": []
+}

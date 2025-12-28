@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DeepSeek V3.2 Speciale (OpenRouter)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Merriweather', 'serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              parchment: {
+                50: '#FDFBF7', // Main Document BG
+                100: '#F7F4EB', // Sidebar/Panel BG
+                200: '#EBE6D8', // Borders
+                300: '#DCD4C0',
+              },
+              ink: {
+                950: '#1A120B', // Heading Black
+                900: '#2C1810', // Body Text
+                700: '#4A3B32', // Secondary Text
+                500: '#795548', // Muted Text
+                400: '#A1887F', // Disabled
+              },
+              bronze: {
+                50: '#FAF6F1',
+                100: '#F0E6D9',
+                200: '#DFCAB0',
+                500: '#A67C52', // Primary Brand Color (Gold/Bronze)
+                600: '#8D6640', // Hover State
+                700: '#6B4C30',
+                900: '#3E2723',
+              },
+              highlight: '#FFF9C4', // Marker yellow
+            },
+            animation: {
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'fadeIn': 'fadeIn 0.3s ease-out forwards',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              }
+            },
+            typography: (theme) => ({
+              DEFAULT: {
+                css: {
+                  color: theme('colors.ink.900'),
+                  a: {
+                    color: theme('colors.bronze.600'),
+                    '&:hover': {
+                      color: theme('colors.bronze.500'),
+                    },
+                  },
+                  h1: { color: theme('colors.ink.950') },
+                  h2: { color: theme('colors.ink.950') },
+                  h3: { color: theme('colors.ink.950') },
+                  strong: {
+                    color: theme('colors.ink.950'),
+                    fontWeight: '700',
+                  },
+                  code: {
+                    color: theme('colors.bronze.700'),
+                    backgroundColor: theme('colors.parchment.200'),
+                    borderRadius: '4px',
+                    padding: '2px 4px',
+                  },
+                  pre: {
+                    backgroundColor: theme('colors.ink.900'),
+                    color: theme('colors.parchment.50'),
+                  },
+                  'blockquote p:first-of-type::before': { content: 'none' },
+                  'blockquote p:last-of-type::after': { content: 'none' },
+                },
+              },
+            }),
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #FDFBF7; /* Parchment 50 */
+        color: #2C1810; /* Ink 900 */
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #DCD4C0; 
+        border-radius: 4px;
+        border: 2px solid #FDFBF7;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #A67C52; 
+      }
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(166, 124, 82, 0.2); /* Bronze border */
+        box-shadow: 0 4px 20px -2px rgba(44, 24, 16, 0.05);
+      }
+      .reasoning-block {
+        background-color: #F7F4EB;
+        border-left: 3px solid #A67C52;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-markdown": "https://aistudiocdn.com/react-markdown@^10.1.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "uuid": "https://aistudiocdn.com/uuid@^13.0.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
