@@ -171,10 +171,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onDelete, onEdit, on
               </div>
             ) : (
               <>
-                {/* Reasoning Block - Show during streaming OR when both reasoning and text exist */}
-                {!isUser && ((message.isStreaming && !message.text) || (message.reasoning && message.text)) && (
+                {/* Reasoning Block - Show during streaming (before text) OR when both reasoning and text exist */}
+                {!isUser && (
+                  (message.isStreaming && !message.text) ||
+                  (!message.isStreaming && message.reasoning && message.text)
+                ) && (
                   <div className="mb-6 text-sm">
-                    <button 
+                    <button
                       onClick={() => setIsReasoningCollapsed(!isReasoningCollapsed)}
                       className="flex items-center gap-2 text-bronze-700 hover:text-bronze-900 transition-colors mb-3 w-full text-left bg-bronze-50 border border-bronze-200 p-2.5 rounded-lg shadow-sm"
                     >
@@ -188,7 +191,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onDelete, onEdit, on
                         </span>
                       )}
                     </button>
-                    
+
                     {(!isReasoningCollapsed || (message.isStreaming && !message.text)) && (
                       <div className="p-4 rounded-lg bg-parchment-100 text-ink-700 whitespace-pre-wrap leading-relaxed reasoning-block shadow-inner max-h-[600px] overflow-y-auto scrollbar-thin text-base font-serif border-t-2 border-bronze-500/20">
                         {message.reasoning || <span className="animate-pulse text-bronze-500 italic">正在进行逻辑推演...</span>}
@@ -200,25 +203,39 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onDelete, onEdit, on
                   </div>
                 )}
 
-                {/* Final Answer - Show text, or reasoning as answer when text is empty */}
-                {(message.text || (!message.isStreaming && message.reasoning)) && (
-                  // Removed prose-invert for standard light mode prose
-                  <div className={`markdown-body prose prose-lg max-w-none
-                    prose-p:text-inherit prose-headings:text-inherit prose-strong:text-inherit
-                    prose-pre:bg-ink-900 prose-pre:border prose-pre:border-ink-700 prose-pre:rounded-xl prose-pre:text-parchment-50
-                    prose-code:text-bronze-800 prose-code:bg-parchment-200/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
-                    prose-a:underline hover:prose-a:text-bronze-200
-                    prose-blockquote:border-bronze-500 prose-blockquote:bg-parchment-100/50 prose-blockquote:px-4 prose-blockquote:py-1 prose-blockquote:rounded-r prose-blockquote:italic
-                    prose-li:marker:text-bronze-500
-                    ${isUser ? 'prose-invert prose-p:text-parchment-50 prose-headings:text-parchment-50 prose-strong:text-white prose-code:text-parchment-100 prose-code:bg-white/10 prose-a:text-parchment-200' : ''}
-                  `}>
-                    <ReactMarkdown>{message.text || message.reasoning}</ReactMarkdown>
-                  </div>
-                )}
-                
+                {/* Final Answer - Show text OR reasoning as answer when text is empty */}
+                {(() => {
+                  const hasText = message.text && message.text.trim().length > 0;
+                  const hasReasoning = message.reasoning && message.reasoning.trim().length > 0;
+                  const showFinalAnswer = hasText || (!message.isStreaming && hasReasoning);
+                  const contentToShow = hasText ? message.text : message.reasoning;
+
+                  if (showFinalAnswer && contentToShow) {
+                    return (
+                      <div className={`markdown-body prose prose-lg max-w-none
+                        prose-p:text-inherit prose-headings:text-inherit prose-strong:text-inherit
+                        prose-pre:bg-ink-900 prose-pre:border prose-pre:border-ink-700 prose-pre:rounded-xl prose-pre:text-parchment-50
+                        prose-code:text-bronze-800 prose-code:bg-parchment-200/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
+                        prose-a:underline hover:prose-a:text-bronze-200
+                        prose-blockquote:border-bronze-500 prose-blockquote:bg-parchment-100/50 prose-blockquote:px-4 prose-blockquote:py-1 prose-blockquote:rounded-r prose-blockquote:italic
+                        prose-li:marker:text-bronze-500
+                        ${isUser ? 'prose-invert prose-p:text-parchment-50 prose-headings:text-parchment-50 prose-strong:text-white prose-code:text-parchment-100 prose-code:bg-white/10 prose-a:text-parchment-200' : ''}
+                      `}>
+                        <ReactMarkdown>{contentToShow}</ReactMarkdown>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
                 {/* Blinking Cursor for Streaming text */}
                 {message.isStreaming && message.text && (
                   <span className={`inline-block w-2.5 h-5 ml-1 align-middle animate-pulse ${isUser ? 'bg-parchment-50' : 'bg-bronze-500'}`} />
+                )}
+
+                {/* Streaming cursor for reasoning-only responses */}
+                {message.isStreaming && !message.text && message.reasoning && (
+                  <span className="inline-block w-2.5 h-5 ml-1 align-middle animate-pulse bg-bronze-500" />
                 )}
               </>
             )}
